@@ -1,0 +1,27 @@
+// Notre Historia - Main SCSS
+
+// @use doit être en premier (syntaxe moderne Sass)
+@use "variables" as *;
+@use "base" as *;
+@use "list" as *;
+@use "block" as *;
+
+// Import des fichiers CSS purs (après les @use)
+@import "normalize.css";
+
+// Note: Les styles des composants autonomes sont définis dans leurs fichiers .vue respectifs:
+// - Menu.vue -> .menu*, .global
+// - AppFooter.vue -> .footer*
+// - PortraitSlider.vue -> .portrait*
+// - MapBlock.vue -> .map
+
+// --- Page transition : fondu blanc ---
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.7s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}

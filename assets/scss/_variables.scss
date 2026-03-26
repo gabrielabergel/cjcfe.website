@@ -1,0 +1,33 @@
+// Variables CSS et Fonts - Notre Historia
+
+:root {
+  // Couleurs
+  --black: #000;
+  --white: #fff;
+  --gray: #666;
+  --gray-light: #f5f5f5;
+  --blue: #0060a8;
+  --beige: #bda05e;
+
+  // Polices
+  --font-body: 'Inter', Arial, sans-serif;
+  --font-title: 'Special Gothic Condensed One', sans-serif;
+
+  // Border radius
+  --radius: 20px;
+  --radius-lg: 30px;
+
+  // Espacements
+  --0: 0px;
+  --10: 10px;
+  --15: 15px;
+  --20: 20px;
+  --30: 30px;
+  --40: 40px;
+  --60: 60px;
+
+  // Dimensions
+  --100: 100%;
+  --100vh: 100vh;
+  --f-18: 18px;
+}

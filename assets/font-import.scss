@@ -1,0 +1,13 @@
+@import "inter.css";
+
+@font-face {
+  font-family: 'NewEdge';
+  src:
+          url('/fonts/NewEdge666-SemiboldRounded.woff2') format('woff2'),
+          url('/fonts/NewEdge666-SemiboldRounded.woff') format('woff'),
+          url('/fonts/NewEdge666-SemiboldRounded.otf') format('opentype'),
+          url('/fonts/NewEdge666Test-SemiboldRounded.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
