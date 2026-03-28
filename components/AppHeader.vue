@@ -113,7 +113,7 @@ const donationUrl = computed(() => data.value?.result?.donsBoutonUrl || null)
 }
 
 .header_menu_icon {
-  width: 30px;
+  width: 24px;
   height: 24px;
   cursor: pointer;
   display: flex;
@@ -241,7 +241,7 @@ const donationUrl = computed(() => data.value?.result?.donsBoutonUrl || null)
 
   .header_menu_icon {
     width: 24px;
-    height: 18px;
+    height: 24px;
   }
 
   .header_menu {
