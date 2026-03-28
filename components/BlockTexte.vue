@@ -15,6 +15,7 @@ defineProps<{
   line-height: 1.7;
   color: var(--text-color, #333);
   margin: 0 0 var(--20);
+  white-space: pre-line; // Préserve les sauts de ligne
 
   p {
     margin: 0 0 1em;

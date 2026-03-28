@@ -10,13 +10,12 @@
   margin: var(--40) 0;
   border: none;
   height: 1px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    var(--blue) 20%,
-    var(--blue) 80%,
-    transparent
-  );
-  opacity: 0.3;
+  background-color: var(--blue);
+  
+  // Sortir du container pour prendre toute la largeur
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>

@@ -1,0 +1,54 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create .env file for build
+        run: |
+          echo "API_AUTH_EMAIL=${{ secrets.API_AUTH_EMAIL }}" >> .env
+          echo "API_AUTH_PASSWORD=${{ secrets.API_AUTH_PASSWORD }}" >> .env
+          echo "API_URL=${{ secrets.API_URL }}" >> .env
+
+      - name: Build (SSR mode)
+        run: npm run build
+
+      - name: Prepare deployment
+        run: |
+          mkdir -p deploy
+          cp -r .output deploy/.output
+          cp package.json deploy/
+          cp package-lock.json deploy/ || true
+          echo "NUXT_API_URL=${{ secrets.API_URL }}" >> deploy/.env
+          echo "NUXT_API_AUTH_EMAIL=${{ secrets.API_AUTH_EMAIL }}" >> deploy/.env
+          echo "NUXT_API_AUTH_PASSWORD=${{ secrets.API_AUTH_PASSWORD }}" >> deploy/.env
+          echo "NUXT_PUBLIC_CMS_BASE_URL=${{ secrets.API_URL }}" >> deploy/.env
+
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Deploy via rsync with password
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -avz --delete \
+            -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no" \
+            deploy/ \
+            ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_TARGET_DIR }}

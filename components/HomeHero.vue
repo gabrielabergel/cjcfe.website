@@ -2,10 +2,11 @@
   <section class="hero">
     <!-- Image de fond -->
     <img
-      v-if="cover?.fallback?.src"
-      :src="cover.fallback.src"
+      v-if="cover?.reg?.url"
+      :src="cover.xxl?.url || cover.reg.url"
       :alt="cover.alt || ''"
       class="hero_background"
+      :style="{ objectPosition: cover.focus || 'center' }"
     />
     <img v-else src="/images/hero-visuel-02.svg" class="hero_background" alt="" />
 
@@ -21,12 +22,12 @@
 </template>
 
 <script setup lang="ts">
-import type { ResponsiveImage } from '~/types/image'
+import type { CMS_ImageObject } from '~/types/image'
 
 interface Props {
   titre?: CMS_API_Block[]
   soustitre?: CMS_API_Block[]
-  cover?: ResponsiveImage | null
+  cover?: CMS_ImageObject | null
 }
 
 defineProps<Props>()
@@ -74,7 +75,7 @@ defineProps<Props>()
   width: 100%;
   background-color: rgba(0, 96, 168, 0.65); // Bleu avec transparence
   backdrop-filter: blur(8px);
-  padding: 40px;
+  padding: 40px 40px 120px 40px; // 120px en bas pour laisser place au bandeau Shabbat
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -127,7 +128,7 @@ defineProps<Props>()
   .hero_content {
     flex-direction: column;
     gap: 20px;
-    padding: 30px;
+    padding: 30px 30px 70px 30px;
   }
 
   .hero_title {
@@ -145,12 +146,12 @@ defineProps<Props>()
 
 @media screen and (max-width: 479px) {
   .hero_content {
-    padding: 20px;
+    padding: 20px 20px 70px 20px;
   }
 
   .hero_title {
     h1, h2 {
-      font-size: 36px;
+      font-size: 45px;
     }
   }
 

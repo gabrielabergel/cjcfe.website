@@ -199,7 +199,7 @@ const contact = computed(() => data.value?.result?.contact)
   align-items: center;
   flex-wrap: wrap;
   gap: 20px;
-  padding: 30px var(--40);
+  padding: 30px var(--40) 110px var(--40); // 110px en bas pour le bandeau Shabbat
   border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
@@ -280,7 +280,7 @@ const contact = computed(() => data.value?.result?.contact)
   .footer_bottom {
     flex-direction: column;
     text-align: center;
-    padding: 20px var(--20);
+    padding: 20px var(--20) 80px var(--20);
   }
 }
 
@@ -292,11 +292,30 @@ const contact = computed(() => data.value?.result?.contact)
 
 @media screen and (max-width: 479px) {
   .footer_contact_title {
-    font-size: 48px;
+    font-size: 45px;
   }
 
   .footer_contact_text {
     font-size: 14px;
+  }
+
+  .footer_col--nav {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .footer_nav {
+    flex: 2;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .footer_legal {
+    flex: 1;
+    align-items: flex-start;
+    text-align: left;
   }
 }
 </style>

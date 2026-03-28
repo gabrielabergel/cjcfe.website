@@ -31,13 +31,13 @@
   align-items: flex-end;
   display: flex;
   position: relative;
-  cursor: pointer;
 }
 
 .list_label {
   color: var(--blue);
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
   font-size: 18px;
+  white-space: pre-line;
 }
 
 .list_label.is-partenaires {
@@ -170,6 +170,7 @@
   justify-content: space-between;
   align-items: flex-start;
   display: flex;
+  cursor: pointer;
 }
 
 .list_line_wrapper.is-partenaires {
@@ -178,13 +179,21 @@
 }
 
 .list_desc {
-  width: 66.66%;
+  width: 50%;
+  align-self: flex-end; // Aligné avec la colonne Description (à droite)
+}
+
+.list_desc--event {
+  width: 66.66%; // 2 colonnes sur 3
+  margin-left: 33.33%; // Décalé d'une colonne (aligné avec "Événement")
+  align-self: flex-start;
 }
 
 .list_dev_text {
   color: var(--blue);
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
   font-size: 18px;
+  white-space: pre-line;
 }
 
 .list_dev {
@@ -252,6 +261,10 @@
     width: var(--100);
   }
 
+  .list_desc--event {
+    margin-left: 0;
+  }
+
   .list_dev {
     grid-column-gap: var(--20);
     grid-row-gap: var(--20);
@@ -270,15 +283,20 @@
 
 @media screen and (max-width: 767px) {
   .list_title {
-    font-size: 89px;
+    font-size: 60px;
   }
 }
 
 @media screen and (max-width: 479px) {
+  .list_title {
+    font-size: 45px;
+    margin-top: 40px;
+  }
+
   .list_title,
   .list_line {
-    padding-right: var(--10);
-    padding-left: var(--10);
+    padding-right: 20px;
+    padding-left: 20px;
   }
 
   .list_case.is-partenaires {

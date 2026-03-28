@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ResponsiveImage } from '~/types/image'
+import type { CMS_ImageObject } from '~/types/image'
 
 type Membre = {
   photo: CMS_API_File[]
@@ -57,7 +57,7 @@ type FetchData = CMS_API_Response & {
       slug: string
       titre: CMS_API_Block[]
       soustitre: CMS_API_Block[]
-      cover: ResponsiveImage | null
+      cover: CMS_ImageObject | null
       membres: Membre[]
       contact_titre: string | null
       contact_soustitre: string | null
@@ -78,7 +78,18 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
           slug: true,
           titre: 'page.titre.toBlocks',
           soustitre: 'page.soustitre.toBlocks',
-          cover: 'page.responsiveImage("cover", "cover")',
+          cover: {
+            query: 'page.content.get("cover").toFile',
+            select: {
+              alt: 'file.alt.value',
+              tiny: 'file.resize(50, null, 10)',
+              small: 'file.resize(500)',
+              reg: 'file.resize(1280)',
+              large: 'file.resize(1920)',
+              xxl: 'file.resize(2500)',
+              focus: 'file.focus',
+            },
+          },
           membres: {
             query: 'page.membres.toStructure',
             select: {
@@ -246,8 +257,22 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
     gap: 30px;
   }
 
+  .contact-form-content {
+    width: 100%;
+  }
+
   .contact-form-title h2 {
     font-size: clamp(32px, 5vw, 60px);
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .contact-form-section {
+    padding: 20px;
+  }
+
+  .contact-form-title h2 {
+    font-size: 45px;
   }
 }
 

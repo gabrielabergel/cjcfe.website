@@ -9,14 +9,15 @@
     />
 
     <!-- Image cover -->
-    <div v-if="data?.result?.cover" class="article_cover">
-      <ResponsivePicture
-        :image="data.result.cover"
-        sizes="(min-width: 2500px) 2500px, 100vw"
-        loading="eager"
-        picture-class="article_cover_picture"
+    <div v-if="data?.result?.cover?.reg" class="article_cover">
+      <img
+        :src="data.result.cover.xxl?.url || data.result.cover.reg.url"
+        :alt="data.result.cover.alt || ''"
+        class="article_cover_img"
+        :style="{ objectPosition: data.result.cover.focus || 'center' }"
       />
     </div>
+
 
     <!-- Contenu avec layout en colonnes -->
     <div class="article_content">
@@ -78,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ResponsiveImage } from '~/types/image'
+import type { CMS_ImageObject } from '~/types/image'
 
 const route = useRoute()
 const slug = route.params.slug as string
@@ -90,8 +91,8 @@ type ResolvedBlock = {
   content: {
     text?: string
     level?: string
-    image?: ResponsiveImage | null
-    images?: ResponsiveImage[]
+    image?: CMS_ImageObject | null
+    images?: CMS_ImageObject[]
     caption?: string
     citation?: string
     alt?: string
@@ -120,7 +121,7 @@ type FetchData = CMS_API_Response & {
     slug: string
     template: string
     layout?: LayoutRow[] | null
-    cover?: ResponsiveImage | null
+    cover?: CMS_ImageObject | null
   } | null
 }
 
@@ -137,7 +138,18 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
       slug: true,
       template: true,
       layout: 'page.layoutWithResolvedFiles',
-      cover: 'page.responsiveImage("cover", "cover")',
+      cover: {
+        query: 'page.content.get("image").toFile',
+        select: {
+          alt: 'file.alt.value',
+          tiny: 'file.resize(50, null, 10)',
+          small: 'file.resize(500)',
+          reg: 'file.resize(1280)',
+          large: 'file.resize(1920)',
+          xxl: 'file.resize(2500)',
+          focus: 'file.focus',
+        },
+      },
     },
   },
 })
@@ -193,7 +205,7 @@ function getColumnClass(width?: string): string {
 
 .article_content {
   padding: var(--40);
-  max-width: 1200px;
+  max-width: 2000px;
   margin: 0 auto;
 }
 
@@ -247,6 +259,22 @@ function getColumnClass(width?: string): string {
 
   .article_column {
     width: 100% !important;
+  }
+}
+
+@media (max-width: 479px) {
+  .v-article {
+    h1, h2 {
+      font-size: 45px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+
+  .article_content {
+    padding: 20px;
   }
 }
 </style>

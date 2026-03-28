@@ -2,7 +2,8 @@
   <div class="header_container">
     <header class="header" :class="{ 'has-banner': hasBanner }">
       <NuxtLink to="/" class="header_logo">
-        <img src="/images/logo-cjcfe.svg" alt="CJCFE" class="header_logo_image" />
+        <img src="/images/logo-cjcfe.svg" alt="CJCFE" class="header_logo_image header_logo_image--desktop" />
+        <img src="/images/logo-cjcfe-mobile.svg" alt="CJCFE" class="header_logo_image header_logo_image--mobile" />
       </NuxtLink>
 
       <nav class="header_nav">
@@ -97,12 +98,20 @@ const donationUrl = computed(() => data.value?.result?.donsBoutonUrl || null)
 .header_logo {
   display: flex;
   align-items: center;
-  padding: 10px; 
+  padding: 0px; 
 }
 
 .header_logo_image {
   height: 40px;
   width: auto;
+
+  &--desktop {
+    display: block;
+  }
+
+  &--mobile {
+    display: none;
+  }
 }
 
 .header_nav {
@@ -233,6 +242,20 @@ const donationUrl = computed(() => data.value?.result?.donsBoutonUrl || null)
   .header_menu_link {
     font-size: 18px;
     padding: 14px 28px;
+  }
+
+  .header_logo_image {
+    &--desktop {
+      display: none;
+    }
+
+    &--mobile {
+      display: block;
+    }
+  }
+
+  .header_nav .app-button {
+    display: none;
   }
 }
 </style>

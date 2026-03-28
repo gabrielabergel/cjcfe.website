@@ -16,13 +16,12 @@
         v-for="(activite, index) in activites"
         :key="index"
         class="list_line"
-        @click="toggleActivite(index)"
       >
-        <div class="list_plus">
+        <div class="list_plus" @click="toggleActivite(index)">
           <div class="list_plus_line"></div>
           <div class="list_plus_line is-vertical" v-show="!openActivites[index]"></div>
         </div>
-        <div class="list_line_wrapper">
+        <div class="list_line_wrapper" @click="toggleActivite(index)">
           <div class="list_case">
             <p class="list_label is-bold">{{ activite.titre }}</p>
           </div>

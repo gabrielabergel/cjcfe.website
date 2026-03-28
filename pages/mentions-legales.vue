@@ -1,9 +1,9 @@
 <template>
-  <main class="v-legal">
+  <main class="page">
 
     <template v-if="data?.status === 'ok' && data.result">
-      <ListeMentions 
-      :title="data.result.title" 
+      <ListeMentions
+      :title="data.result.title"
       :items="data.result.items ?? []" />
     </template>
 
@@ -39,8 +39,13 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
 })
 </script>
 
-<style lang="scss" scoped>
-.v-legal {
+<style lang="scss">
+.page {
   padding-top: 80px;
+  min-height: 100vh;
+
+  .list_title {
+    padding-top: var(--40);
+  }
 }
 </style>

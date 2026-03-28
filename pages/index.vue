@@ -8,7 +8,7 @@
       :cover="data.result.home.cover"
     />
 
-    <PortraitSlider v-if="lastArticles.length" title="Actualités" :portraits="lastArticles" />
+    <ArticleSlider v-if="lastArticles.length" title="Actualités" :articles="lastArticles" />
 
     <ListeEvenement
       v-if="formattedEvents.length"
@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { ResponsiveImage } from '~/types/image'
+import type { CMS_ImageObject } from '~/types/image'
 
 // TYPES
 type ReferenceEvent = {
@@ -35,9 +35,9 @@ type ReferenceEvent = {
 
 type Article = {
   title: string | null
-  main_title: string | null
+  mainTitle: string | null
   resume: string | null
-  cover: { url: string } | null
+  cover: CMS_ImageObject | null
   slug: string | null
 }
 
@@ -50,7 +50,7 @@ type HomePageData = CMS_API_Response & {
       bandeau: string | null
       titre: CMS_API_Block[]
       soustitre: CMS_API_Block[]
-      cover: ResponsiveImage | null
+      cover: CMS_ImageObject | null
     }
     evenementsData: {
       evenements: ReferenceEvent[]
@@ -75,7 +75,18 @@ const { data } = await useFetch<HomePageData>('/api/CMS_KQLRequest', {
           bandeau: true,
           titre: 'page.titre.toBlocks',
           soustitre: 'page.soustitre.toBlocks',
-          cover: 'page.responsiveImage("cover", "cover")',
+          cover: {
+            query: 'page.content.get("cover").toFile',
+            select: {
+              alt: 'file.alt.value',
+              tiny: 'file.resize(50, null, 10)',
+              small: 'file.resize(500)',
+              reg: 'file.resize(1280)',
+              large: 'file.resize(1920)',
+              xxl: 'file.resize(2500)',
+              focus: 'file.focus',
+            },
+          },
         },
       },
       evenementsData: {
@@ -99,12 +110,18 @@ const { data } = await useFetch<HomePageData>('/api/CMS_KQLRequest', {
         select: {
           title: true,
           slug: true,
-          main_title: true,
+          mainTitle: true,
           resume: true,
           cover: {
-            query: 'page.cover.toFile',
+            query: 'page.content.get("image").toFile',
             select: {
-              url: 'file.devUrl',
+              alt: 'file.alt.value',
+              tiny: 'file.resize(50, null, 10)',
+              small: 'file.resize(500)',
+              reg: 'file.resize(1280)',
+              large: 'file.resize(1920)',
+              xxl: 'file.resize(2500)',
+              focus: 'file.focus',
             },
           },
         },
@@ -113,11 +130,11 @@ const { data } = await useFetch<HomePageData>('/api/CMS_KQLRequest', {
   },
 })
 
-// Transformer les 3 derniers articles pour le PortraitSlider
+// Transformer les 3 derniers articles pour le ArticleSlider
 const lastArticles = computed(() => {
   const articles = data.value?.result?.actualites ?? []
   return articles.map((article) => ({
-    nom: article.main_title || article.title,
+    nom: article.mainTitle || article.title,
     description: article.resume,
     image: article.cover,
     slug: article.slug,

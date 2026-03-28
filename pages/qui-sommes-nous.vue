@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ResponsiveImage } from '~/types/image'
+import type { CMS_ImageObject } from '~/types/image'
 
 type LayoutColumn = {
   id: string
@@ -32,7 +32,7 @@ type FetchData = CMS_API_Response & {
       slug: string
       titre: CMS_API_Block[]
       soustitre: CMS_API_Block[]
-      cover: ResponsiveImage | null
+      cover: CMS_ImageObject | null
       layout: LayoutRow[] | null
     }
   }
@@ -51,7 +51,18 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
           slug: true,
           titre: 'page.titre.toBlocks',
           soustitre: 'page.soustitre.toBlocks',
-          cover: 'page.responsiveImage("cover", "cover")',
+          cover: {
+            query: 'page.content.get("cover").toFile',
+            select: {
+              alt: 'file.alt.value',
+              tiny: 'file.resize(50, null, 10)',
+              small: 'file.resize(500)',
+              reg: 'file.resize(1280)',
+              large: 'file.resize(1920)',
+              xxl: 'file.resize(2500)',
+              focus: 'file.focus',
+            },
+          },
           layout: 'page.layoutsWithImages("layout", "column")',
         },
       },

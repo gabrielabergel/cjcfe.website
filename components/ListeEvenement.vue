@@ -19,13 +19,12 @@
         v-for="(event, index) in events"
         :key="index"
         class="list_line"
-        @click="toggleEvent(index)"
       >
-        <div class="list_plus">
+        <div class="list_plus" @click="toggleEvent(index)">
           <div class="list_plus_line"></div>
           <div class="list_plus_line is-vertical" v-show="!openEvents[index]"></div>
         </div>
-        <div class="list_line_wrapper">
+        <div class="list_line_wrapper" @click="toggleEvent(index)">
           <div class="list_case">
             <p class="list_label">{{ event.date }}</p>
           </div>
@@ -36,7 +35,7 @@
             <p class="list_label">{{ event.venue }}</p>
           </div>
         </div>
-        <div class="list_desc" v-show="openEvents[index]">
+        <div class="list_desc list_desc--event" v-show="openEvents[index]">
           <p class="list_dev_text">{{ event.description }}</p>
         </div>
       </div>

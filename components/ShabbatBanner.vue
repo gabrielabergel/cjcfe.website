@@ -1,6 +1,19 @@
 <template>
-  <div class="shabbat-banner">
+  <div class="shabbat-banner" :class="{ 'is-open': isOpen }">
+    <!-- Bouton mobile pour ouvrir/fermer -->
+    <button class="shabbat-banner_toggle" @click="toggleBanner" :aria-label="isOpen ? 'Fermer les horaires' : 'Voir les horaires de Shabbat'">
+      <img src="/images/time-shabbat.svg" alt="" class="shabbat-banner_toggle-icon" />
+    </button>
+
     <div class="shabbat-banner_content">
+      <!-- Bouton fermer sur mobile -->
+      <button class="shabbat-banner_close" @click="toggleBanner" aria-label="Fermer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
       <!-- Date du Shabbat -->
       <div class="shabbat-banner_item">
         <span class="shabbat-banner_label">Date</span>
@@ -46,7 +59,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
+
+// État pour mobile: bandeau ouvert/fermé
+const isOpen = ref(false)
+
+const toggleBanner = () => {
+  isOpen.value = !isOpen.value
+}
 
 interface Props {
   shabbatParacha?: string | null
@@ -183,6 +203,12 @@ const formatFeteDate = (date: string | null | undefined): string => {
   width: 100%;
 }
 
+// Bouton toggle et close cachés sur desktop
+.shabbat-banner_toggle,
+.shabbat-banner_close {
+  display: none;
+}
+
 .shabbat-banner_content {
   display: flex;
   justify-content: space-between;
@@ -224,8 +250,85 @@ const formatFeteDate = (date: string | null | undefined): string => {
 }
 
 @media screen and (max-width: 991px) {
-  .shabbat-banner_content {
-    flex-wrap: wrap;
+  .shabbat-banner {
+    // Par défaut, cacher le contenu sur mobile
+    .shabbat-banner_content {
+      display: none;
+      flex-wrap: wrap;
+    }
+
+    // Afficher le bouton toggle
+    .shabbat-banner_toggle {
+      display: flex;
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 1000;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background-color: var(--beige);
+      border: none;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+
+    .shabbat-banner_toggle-icon {
+      width: 28px;
+      height: 28px;
+    }
+
+    // Quand ouvert
+    &.is-open {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+
+      .shabbat-banner_content {
+        display: flex;
+        position: relative;
+      }
+
+      .shabbat-banner_toggle {
+        display: none;
+      }
+
+      .shabbat-banner_close {
+        display: flex;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.2);
+        border: none;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.3);
+        }
+      }
+    }
   }
 
   .shabbat-banner_item {

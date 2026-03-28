@@ -1,9 +1,9 @@
 <template>
   <main class="page">
-    <PageHeader
+    <PageHero
       :titre="data?.result?.page?.titre"
       :soustitre="data?.result?.page?.soustitre"
-      variant="transparent"
+      transparent
     />
 
     <!-- Article à la Une -->
@@ -12,12 +12,16 @@
         <h2 class="featured_title">Article à la Une</h2>
       </div>
       <NuxtLink :to="`/articles/${featuredArticle.slug}`" class="featured_content">
-        <div v-if="featuredArticle.cover?.url" class="featured_image">
-          <img :src="featuredArticle.cover.url" :alt="featuredArticle.title" />
+        <div v-if="featuredArticle.cover?.reg" class="featured_image">
+          <img :src="featuredArticle.cover.reg.url" :alt="featuredArticle.cover.alt || featuredArticle.title" :style="{ objectPosition: featuredArticle.cover.focus || 'center' }" />
         </div>
         <div class="featured_info">
           <h3 class="featured_name">{{ featuredArticle.title }}</h3>
           <p v-if="featuredArticle.resume" class="featured_description">{{ featuredArticle.resume }}</p>
+          <span class="featured_link">
+            Lire
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
         </div>
       </NuxtLink>
     </section>
@@ -31,8 +35,8 @@
           :to="`/articles/${article.slug}`"
           class="article_item"
         >
-          <div v-if="article.cover?.url" class="article_image">
-            <img :src="article.cover.url" :alt="article.title" />
+          <div v-if="article.cover?.reg" class="article_image">
+            <img :src="article.cover.reg.url" :alt="article.cover.alt || article.title" :style="{ objectPosition: article.cover.focus || 'center' }" />
           </div>
           <div v-else class="article_placeholder" :class="index % 2 === 0 ? 'is-blue' : 'is-beige'">
             <span class="article_placeholder_title">{{ article.title }}</span>
@@ -78,6 +82,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import type { CMS_ImageObject } from '~/types/image'
 
 type Event = {
   date: string | null
@@ -92,7 +97,7 @@ type Article = {
   title: string
   slug: string
   resume: string | null
-  cover: { url: string } | null
+  cover: CMS_ImageObject | null
 }
 
 type FetchData = CMS_API_Response & {
@@ -144,9 +149,15 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
               slug: true,
               resume: true,
               cover: {
-                query: 'page.cover.toFile',
+                query: 'page.content.get("image").toFile',
                 select: {
-                  url: 'file.devUrl',
+                  alt: 'file.alt.value',
+                  tiny: 'file.resize(50, null, 10)',
+                  small: 'file.resize(500)',
+                  reg: 'file.resize(1280)',
+                  large: 'file.resize(1920)',
+                  xxl: 'file.resize(2500)',
+                  focus: 'file.focus',
                 },
               },
             },
@@ -232,14 +243,14 @@ const formattedEvents = computed(() => {
 }
 
 .articles {
-  padding: var(--40);
+  padding: 0;
   background-color: transparent;
 }
 
 .articles_list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--20);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
 }
 
 .articles_more {
@@ -249,35 +260,40 @@ const formattedEvents = computed(() => {
 }
 
 .btn {
-  display: inline-block;
-  padding: var(--10) var(--20);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
   background-color: var(--blue);
   color: var(--white);
   text-decoration: none;
   border-radius: 100px;
-  font-weight: 500;
+  font-family: var(--font-body);
   font-size: 16px;
-  border: none;
+  font-weight: 500;
+  border: 2px solid var(--blue);
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 
   &:hover {
     background-color: var(--beige);
+    border-color: var(--beige);
+    color: var(--black);
   }
 }
 
 .article_item {
   background-color: var(--white);
-  border-radius: 8px;
   overflow: hidden;
   text-decoration: none;
-  transition: transform 0.3s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  flex: 1 1 25%;
+  min-width: 25%;
+  max-width: 50%;
+  border: solid var(--blue);
+  border-width: 1px 0.5px;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-
     .article_link {
       gap: 12px;
     }
@@ -328,7 +344,8 @@ const formattedEvents = computed(() => {
 .article_title {
   margin: 0 0 10px 0;
   color: var(--blue);
-  font-size: 18px;
+  font-family: 'Inter', var(--font-body);
+  font-size: 20px;
   font-weight: 600;
 }
 
@@ -416,9 +433,27 @@ const formattedEvents = computed(() => {
 .featured_description {
   color: var(--white);
   font-family: var(--font-body);
-  font-size: 16px;
-  margin: 0;
+  font-size: 14px;
+  margin: 0 0 15px 0;
   line-height: 1.5;
+}
+
+.featured_link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+  transition: gap 0.3s;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.featured_content:hover .featured_link {
+  gap: 12px;
 }
 
 @media screen and (max-width: 991px) {
@@ -439,6 +474,12 @@ const formattedEvents = computed(() => {
   .featured_image {
     height: 40vw;
   }
+
+  .article_item {
+    flex: 1 1 50%;
+    min-width: 50%;
+    max-width: 100%;
+  }
 }
 
 @media screen and (max-width: 479px) {
@@ -446,8 +487,18 @@ const formattedEvents = computed(() => {
     padding: var(--10);
   }
 
+  .featured_title {
+    font-size: 45px;
+  }
+
   .featured_info {
-    padding: var(--20) var(--10);
+    padding: var(--20) 20px;
+  }
+
+  .article_item {
+    flex: 1 1 100%;
+    min-width: 100%;
+    max-width: 100%;
   }
 }
 
@@ -488,6 +539,7 @@ const formattedEvents = computed(() => {
   .btn {
     background-color: var(--white);
     color: var(--beige);
+    border: none;
 
     &:hover {
       background-color: var(--blue);
@@ -532,7 +584,7 @@ const formattedEvents = computed(() => {
 
   .gazette_title {
     h2 {
-      font-size: 36px;
+      font-size: 45px;
     }
   }
 

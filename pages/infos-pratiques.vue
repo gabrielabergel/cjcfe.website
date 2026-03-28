@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ResponsiveImage } from '~/types/image'
+import type { CMS_ImageObject } from '~/types/image'
 
 type Activite = {
   titre: string
@@ -81,7 +81,7 @@ type FetchData = CMS_API_Response & {
       slug: string
       titre: CMS_API_Block[]
       soustitre: CMS_API_Block[]
-      cover: ResponsiveImage | null
+      cover: CMS_ImageObject | null
       // Prières
       prieres_page_titre: CMS_API_Block[]
       prieres_page_soustitre: CMS_API_Block[]
@@ -119,7 +119,18 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
           slug: true,
           titre: 'page.titre.toBlocks',
           soustitre: 'page.soustitre.toBlocks',
-          cover: 'page.responsiveImage("cover", "cover")',
+          cover: {
+            query: 'page.content.get("cover").toFile',
+            select: {
+              alt: 'file.alt.value',
+              tiny: 'file.resize(50, null, 10)',
+              small: 'file.resize(500)',
+              reg: 'file.resize(1280)',
+              large: 'file.resize(1920)',
+              xxl: 'file.resize(2500)',
+              focus: 'file.focus',
+            },
+          },
           // Prières
           prieres_page_titre: 'page.prieres_page_titre.toBlocks',
           prieres_page_soustitre: 'page.prieres_page_soustitre.toBlocks',
@@ -221,11 +232,13 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
     font-size: 18px;
     line-height: 1.5;
     margin: 0 0 var(--20);
+    white-space: pre-line;
   }
 
   .btn {
     background-color: var(--white);
     color: var(--blue);
+    border: none;
 
     &:hover {
       background-color: var(--beige);
@@ -282,7 +295,7 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
   .prieres_content_title,
   .dons_title {
     h1, h2, h3 {
-      font-size: 36px;
+      font-size: 45px;
     }
   }
 
@@ -326,6 +339,7 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
     font-size: 18px;
     line-height: 1.5;
     margin: 0 0 var(--20);
+    white-space: pre-line;
   }
 
   .btn {
@@ -337,17 +351,66 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
   }
 }
 
+@media screen and (max-width: 991px) {
+  .dons_header {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .dons_title h2 {
+    font-size: 60px;
+  }
+
+  .dons_subtitle p {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .dons_header {
+    padding: 30px;
+  }
+
+  .dons_title h2 {
+    font-size: 48px;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .dons_header {
+    padding: 20px;
+  }
+
+  .dons_title h2 {
+    font-size: 45px;
+  }
+
+  .dons_subtitle p {
+    font-size: 14px;
+  }
+}
+
 .btn {
-  display: inline-block;
-  padding: var(--10) var(--20);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
   background-color: var(--blue);
   color: var(--white);
   text-decoration: none;
   border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 16px;
   font-weight: 500;
+  border: 2px solid var(--blue);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 
   &:hover {
-    opacity: 0.9;
+    background-color: var(--beige);
+    border-color: var(--beige);
+    color: var(--black);
   }
 }
 
@@ -382,6 +445,7 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
     font-size: 18px;
     line-height: 1.5;
     margin: 0 0 var(--20);
+    white-space: pre-line;
   }
 
   .btn {
@@ -431,7 +495,7 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
 
   .deces_title {
     h2 {
-      font-size: 36px;
+      font-size: 45px;
     }
   }
 

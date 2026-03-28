@@ -2,12 +2,12 @@
   <section class="page-hero" :class="{ 'is-transparent': transparent }">
     <!-- Image cover -->
     <div v-if="!transparent" class="page-hero_image">
-      <ResponsivePicture
-        v-if="cover?.fallback?.src"
-        :image="cover"
-        alt=""
-        loading="eager"
-        picture-class="page-hero_picture"
+      <img
+        v-if="cover?.reg?.url"
+        :src="cover.xxl?.url || cover.reg.url"
+        :alt="cover.alt || ''"
+        class="page-hero_img"
+        :style="{ objectPosition: cover.focus || 'center' }"
       />
       <div v-else class="page-hero_placeholder" />
     </div>
@@ -23,12 +23,12 @@
 </template>
 
 <script setup lang="ts">
-import type { ResponsiveImage } from '~/types/image'
+import type { CMS_ImageObject } from '~/types/image'
 
 interface Props {
   titre?: CMS_API_Block[]
   soustitre?: CMS_API_Block[]
-  cover?: ResponsiveImage | null
+  cover?: CMS_ImageObject | null
   transparent?: boolean
 }
 
@@ -41,7 +41,7 @@ withDefaults(defineProps<Props>(), {
 .page-hero {
   position: relative;
   width: 100%;
-  min-height: 90vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -75,15 +75,10 @@ withDefaults(defineProps<Props>(), {
   z-index: 0;
 }
 
-.page-hero_picture {
+.page-hero_img {
   width: 100%;
   height: 100%;
-
-  img {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-  }
+  object-fit: cover;
 }
 
 .page-hero_placeholder {
@@ -103,10 +98,10 @@ withDefaults(defineProps<Props>(), {
   width: 100%;
   background-color: rgba(0, 96, 168, 0.65);
   backdrop-filter: blur(8px);
-  padding: 40px;
+  padding: 40px 40px 120px 40px; // 120px en bas pour laisser place au bandeau Shabbat
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 40px;
 }
 
@@ -135,7 +130,7 @@ withDefaults(defineProps<Props>(), {
 // Media queries
 @media screen and (max-width: 991px) {
   .page-hero {
-    min-height: 60vh;
+    min-height: 100vh;
   }
 
   .page-hero_title {
@@ -153,13 +148,13 @@ withDefaults(defineProps<Props>(), {
 
 @media screen and (max-width: 767px) {
   .page-hero {
-    min-height: 50vh;
+    min-height: 100vh;
   }
 
   .page-hero_content {
     flex-direction: column;
     gap: 20px;
-    padding: 30px;
+    padding: 30px 30px 70px 30px;
   }
 
   .page-hero_title {
@@ -177,12 +172,12 @@ withDefaults(defineProps<Props>(), {
 
 @media screen and (max-width: 479px) {
   .page-hero_content {
-    padding: 20px;
+    padding: 20px 20px 70px 20px;
   }
 
   .page-hero_title {
     h1, h2, h3 {
-      font-size: 36px;
+      font-size: 45px;
     }
   }
 

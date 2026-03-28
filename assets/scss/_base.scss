@@ -1,5 +1,45 @@
 // Styles de base - Notre Historia
 
+// Animations d'apparition
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Variantes d'animation
+.reveal-fade {
+  opacity: 0;
+  transition: opacity 0.6s ease-out;
+
+  &.is-visible {
+    opacity: 1;
+  }
+}
+
+.reveal-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Délais pour animations en cascade
+@for $i from 1 through 10 {
+  .reveal-delay-#{$i} {
+    transition-delay: #{$i * 0.1}s;
+  }
+}
+
 *,
 *::before,
 *::after {
@@ -8,6 +48,28 @@
 
 html {
   height: 100%;
+  scrollbar-color: var(--beige) var(--white);
+  scrollbar-width: thin;
+}
+
+// Custom scrollbar for WebKit browsers (Chrome, Safari, Edge)
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--white);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--beige);
+  border-radius: 5px;
+  border: 2px solid var(--white);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--blue);
 }
 
 body {
@@ -187,8 +249,9 @@ picture {
 }
 
 @media screen and (max-width: 479px) {
-  h1 {
-    font-size: 70px;
+  h1,
+  h2 {
+    font-size: 45px;
   }
 
   .block-text {

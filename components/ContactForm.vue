@@ -281,7 +281,8 @@ const handleSubmit = async () => {
   }
 
   .contact-form-wrapper {
-    padding: var(--20);
+    padding: 0px;
+    width: 100%;
   }
 }
 </style>
