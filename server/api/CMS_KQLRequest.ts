@@ -1,23 +1,23 @@
-export default defineEventHandler(async (event) => {// console.log('data', data)
+export default defineEventHandler(async (event) => {
+    const config = useRuntimeConfig()
 
-    const email = process.env.API_AUTH_EMAIL
-    const password = process.env.API_AUTH_PASSWORD
+    const email = config.apiAuthEmail
+    const password = config.apiAuthPassword
+    const apiUrl = config.apiUrl
 
     const authHeader = Buffer.from(`${email}:${password}`).toString('base64')
 
     const body = await readBody(event)
     console.log('KQL Request body:', JSON.stringify(body, null, 2))
+    console.log('API URL:', apiUrl)
 
-    const dataApi = await $fetch(`${process.env.API_URL}/api/query`, {
-        lazy: true,
+    const dataApi = await $fetch(`${apiUrl}/api/query`, {
         method: 'POST',
         headers: {
             'Authorization': `Basic ${authHeader}`
         },
         body,
     })
-
-    console.log('dataApi', JSON.stringify(dataApi, null, 2))
 
     return dataApi
 })
