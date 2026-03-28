@@ -260,5 +260,17 @@ const getImageUrl = (image: CMS_ImageObject | null): string => {
   .article_card_placeholder {
     height: 50vw;
   }
+
+  .article_swiper {
+    .swiper-button-prev,
+    .swiper-button-next {
+      width: 30px;
+      height: 30px;
+
+      &::after {
+        font-size: 16px;
+      }
+    }
+  }
 }
 </style>

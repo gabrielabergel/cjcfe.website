@@ -261,7 +261,7 @@ const formatFeteDate = (date: string | null | undefined): string => {
     .shabbat-banner_toggle {
       display: flex;
       position: fixed;
-      bottom: 20px;
+      bottom: calc(80px + env(safe-area-inset-bottom, 0px));
       left: 20px;
       z-index: 1000;
       width: 56px;

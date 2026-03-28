@@ -184,7 +184,7 @@ function getColumnClass(width?: string): string {
 
 <style lang="scss">
 .v-article {
-  padding-top: 100px;
+  padding-top: 140px;
 }
 
 .article_cover {

@@ -2,8 +2,7 @@
   <div class="header_container">
     <header class="header" :class="{ 'has-banner': hasBanner }">
       <NuxtLink to="/" class="header_logo">
-        <img src="/images/logo-cjcfe.svg" alt="CJCFE" class="header_logo_image header_logo_image--desktop" />
-        <img src="/images/logo-cjcfe-mobile.svg" alt="CJCFE" class="header_logo_image header_logo_image--mobile" />
+        <img src="/images/logo-cjcfe.svg" alt="CJCFE" class="header_logo_image" />
       </NuxtLink>
 
       <nav class="header_nav">
@@ -28,6 +27,7 @@
     <!-- Menu déroulant -->
     <div class="header_menu" :class="{ 'is-open': menuOpen, 'has-banner': hasBanner }">
       <nav class="header_menu_nav">
+        <NuxtLink to="/" class="header_menu_link" @click="closeMenu">Accueil</NuxtLink>
         <NuxtLink to="/notre-histoire" class="header_menu_link" @click="closeMenu">Notre histoire</NuxtLink>
         <NuxtLink to="/qui-sommes-nous" class="header_menu_link" @click="closeMenu">Qui sommes-nous ?</NuxtLink>
         <NuxtLink to="/articles" class="header_menu_link" @click="closeMenu">Actualités</NuxtLink>
@@ -104,14 +104,6 @@ const donationUrl = computed(() => data.value?.result?.donsBoutonUrl || null)
 .header_logo_image {
   height: 40px;
   width: auto;
-
-  &--desktop {
-    display: block;
-  }
-
-  &--mobile {
-    display: none;
-  }
 }
 
 .header_nav {
@@ -230,28 +222,40 @@ const donationUrl = computed(() => data.value?.result?.donsBoutonUrl || null)
 
 // Responsive
 @media screen and (max-width: 767px) {
-  .header_menu {
+  .header {
+    height: 50px;
+    top: 10px;
+    left: 10px;
     right: 10px;
-    top: 95px;
+    width: calc(100% - 20px);
+    padding: 0 15px;
 
     &.has-banner {
-      top: 129px;
+      top: 44px;
+    }
+  }
+
+  .header_logo_image {
+    height: 30px;
+  }
+
+  .header_menu_icon {
+    width: 24px;
+    height: 18px;
+  }
+
+  .header_menu {
+    right: 10px;
+    top: 70px;
+
+    &.has-banner {
+      top: 104px;
     }
   }
 
   .header_menu_link {
     font-size: 18px;
     padding: 14px 28px;
-  }
-
-  .header_logo_image {
-    &--desktop {
-      display: none;
-    }
-
-    &--mobile {
-      display: block;
-    }
   }
 
   .header_nav .app-button {
