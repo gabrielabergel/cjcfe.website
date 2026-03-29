@@ -35,7 +35,6 @@
         <div class="menu_offset_legals">
           <NuxtLink to="/mentions-legales" target="_blank" class="menu_link--legals" @click="closeMenu">Mentions légales</NuxtLink>
           <NuxtLink to="/protection-des-donnees" target="_blank" class="menu_link--legals" @click="closeMenu">Protection des données</NuxtLink>
-          <NuxtLink to="/engagement" target="_blank" class="menu_link--legals" @click="closeMenu">Engagement</NuxtLink>
         </div>
       </div>
     </div>
