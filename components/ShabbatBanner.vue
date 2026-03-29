@@ -261,7 +261,7 @@ const formatFeteDate = (date: string | null | undefined): string => {
     .shabbat-banner_toggle {
       display: flex;
       position: fixed;
-      bottom: 80px;
+      bottom: calc(80px + env(safe-area-inset-bottom, 0px));
       left: 20px;
       z-index: 1000;
       width: 56px;
@@ -273,7 +273,9 @@ const formatFeteDate = (date: string | null | undefined): string => {
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, bottom 0.1s ease;
+      // Force GPU pour meilleur comportement avec barre navigateur
+      transform: translateZ(0);
 
       &:hover {
         transform: scale(1.05);
@@ -293,10 +295,12 @@ const formatFeteDate = (date: string | null | undefined): string => {
     // Quand ouvert
     &.is-open {
       position: fixed;
-      bottom: 0;
+      bottom: env(safe-area-inset-bottom, 0px);
       left: 0;
       right: 0;
       z-index: 999;
+      // Force GPU pour meilleur comportement avec barre navigateur
+      transform: translateZ(0);
 
       .shabbat-banner_content {
         display: flex;
