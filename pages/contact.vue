@@ -28,8 +28,8 @@
           <span v-if="membre.description" class="membres-banner_label">{{ membre.description }}</span>
           <span class="membres-banner_value">{{ membre.prenom }} {{ membre.nom }}</span>
           <div v-if="membre.email || membre.telephone" class="membres-banner_contact">
-            <a v-if="membre.email" :href="`mailto:${membre.email}`">{{ membre.email }}</a>
-            <a v-if="membre.telephone" :href="`tel:${membre.telephone}`">{{ membre.telephone }}</a>
+            <ObfuscatedContact v-if="membre.email" :value="membre.email" type="email" />
+            <ObfuscatedContact v-if="membre.telephone" :value="membre.telephone" type="tel" />
           </div>
         </div>
       </div>

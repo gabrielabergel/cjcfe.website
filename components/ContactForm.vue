@@ -102,6 +102,9 @@ const submitSuccess = ref(false)
 const submitError = ref(false)
 const submitErrorMessage = ref('')
 
+// Horodatage de chargement du formulaire (time-trap anti-bot)
+const formLoadedAt = Date.now()
+
 const handleSubmit = async () => {
   // Anti-spam: si le honeypot est rempli, c'est un bot
   if (formData.honeypot) {
@@ -123,6 +126,8 @@ const handleSubmit = async () => {
         phone: formData.phone,
         subject: formData.subject,
         message: formData.message,
+        website: formData.honeypot, // honeypot vérifié aussi côté serveur
+        ts: formLoadedAt, // time-trap anti-bot
       },
     })
 
