@@ -16,7 +16,7 @@
           <img :src="featuredArticle.cover.reg.url" :alt="featuredArticle.cover.alt || featuredArticle.title" :style="{ objectPosition: featuredArticle.cover.focus || 'center' }" />
         </div>
         <div class="featured_info">
-          <h3 class="featured_name">{{ featuredArticle.title }}</h3>
+          <h3 class="featured_name">{{ featuredArticle.mainTitle || featuredArticle.title }}</h3>
           <p v-if="featuredArticle.resume" class="featured_description">{{ featuredArticle.resume }}</p>
           <span class="featured_link">
             Lire
@@ -36,13 +36,13 @@
           class="article_item"
         >
           <div v-if="article.cover?.reg" class="article_image">
-            <img :src="article.cover.reg.url" :alt="article.cover.alt || article.title" :style="{ objectPosition: article.cover.focus || 'center' }" />
+            <img :src="article.cover.reg.url" :alt="article.cover.alt || article.mainTitle || article.title" :style="{ objectPosition: article.cover.focus || 'center' }" />
           </div>
           <div v-else class="article_placeholder" :class="index % 2 === 0 ? 'is-blue' : 'is-beige'">
-            <span class="article_placeholder_title">{{ article.title }}</span>
+            <span class="article_placeholder_title">{{ article.mainTitle || article.title }}</span>
           </div>
           <div class="article_content">
-            <h3 class="article_title">{{ article.title }}</h3>
+            <h3 class="article_title">{{ article.mainTitle || article.title }}</h3>
             <p v-if="article.resume" class="article_resume">{{ article.resume }}</p>
             <span class="article_link">
               Lire
@@ -71,7 +71,7 @@
         </div>
         <div class="gazette_subtitle">
           <p v-if="data.result.page.gazette_soustitre">{{ data.result.page.gazette_soustitre }}</p>
-          <a v-if="data.result.page.gazette_pdf?.url" :href="data.result.page.gazette_pdf.url" download target="_blank" class="btn">
+          <a v-if="gazetteDownloadUrl" :href="gazetteDownloadUrl" class="btn">
             {{ data.result.page.gazette_bouton_texte || 'Télécharger la gazette' }}
           </a>
         </div>
@@ -85,16 +85,28 @@ import { computed } from 'vue'
 import type { CMS_ImageObject } from '~/types/image'
 
 type Event = {
+  statut: string | null
+  categorie: string | null
+  mise_en_avant: boolean | string | null
   date: string | null
   heuredebut: string | null
   heurefin: string | null
   nom: string | null
+  accroche: string | null
   description: string | null
+  intervenant: string | null
   lieu: string | null
+  adresse: string | null
+  participation: string | null
+  inscription: string | null
+  contact: string | null
+  lien: string | null
+  lien_texte: string | null
 }
 
 type Article = {
   title: string
+  mainTitle: string | null
   slug: string
   resume: string | null
   cover: CMS_ImageObject | null
@@ -112,11 +124,14 @@ type FetchData = CMS_API_Response & {
       // Gazette
       gazette_titre: string | null
       gazette_soustitre: string | null
-      gazette_pdf: { url: string } | null
+      gazette_pdf: { url: string; filename: string } | null
       gazette_bouton_texte: string | null
     }
   }
 }
+
+// SEO récupéré depuis le CMS
+useCmsSeo("site.find('actualites')")
 
 const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
   lazy: true,
@@ -134,18 +149,30 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
           evenements: {
             query: 'page.evenements.toStructure',
             select: {
+              statut: true,
+              categorie: true,
+              mise_en_avant: true,
               date: true,
               heuredebut: true,
               heurefin: true,
               nom: true,
+              accroche: true,
               description: true,
+              intervenant: true,
               lieu: true,
+              adresse: true,
+              participation: true,
+              inscription: true,
+              contact: true,
+              lien: true,
+              lien_texte: true,
             },
           },
           children: {
             query: 'page.children.listed',
             select: {
               title: true,
+              mainTitle: true,
               slug: true,
               resume: true,
               cover: {
@@ -169,6 +196,7 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
             query: 'page.gazette_pdf.toFile',
             select: {
               url: 'file.url',
+              filename: 'file.filename',
             },
           },
           gazette_bouton_texte: true,
@@ -176,6 +204,14 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
       },
     },
   },
+})
+
+// Lien de téléchargement de la gazette (via le proxy pour forcer le download)
+const gazetteDownloadUrl = computed(() => {
+  const pdf = data.value?.result?.page?.gazette_pdf
+  if (!pdf?.url) return null
+  const name = encodeURIComponent(pdf.filename || 'gazette.pdf')
+  return `/api/download?url=${encodeURIComponent(pdf.url)}&name=${name}`
 })
 
 // Premier article (à la une)
@@ -209,29 +245,46 @@ const hasMoreArticles = computed(() => {
   return children && children.length > 5
 })
 
+// Ne garder que les heures et minutes (ex. "19:00:00" -> "19:00")
+const formatTime = (time: string) => time.slice(0, 5)
+
 // Formater les événements pour ListeAgenda
 const formattedEvents = computed(() => {
   const events = data.value?.result?.page?.evenements
   if (!events) return []
 
-  return events.map((event) => {
+  return events
+    .filter((event) => !event.statut || event.statut === 'publie')
+    .sort((a, b) => {
+      if (!a.date || !b.date) return 0
+      return new Date(a.date).getTime() - new Date(b.date).getTime()
+    })
+    .map((event) => {
     let dateStr = ''
     if (event.date) {
       const dateObj = new Date(event.date)
       dateStr = dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
     }
     if (event.heuredebut) {
-      dateStr += ` - ${event.heuredebut}`
+      dateStr += ` - ${formatTime(event.heuredebut)}`
     }
     if (event.heurefin) {
-      dateStr += ` à ${event.heurefin}`
+      dateStr += ` à ${formatTime(event.heurefin)}`
     }
 
     return {
       date: dateStr,
       title: event.nom || '',
       venue: event.lieu || '',
-      description: event.description || ''
+      category: event.categorie || '',
+      description: event.description || event.accroche || '',
+      speaker: event.intervenant || '',
+      address: event.adresse || '',
+      participation: event.participation || '',
+      registration: event.inscription || '',
+      contact: event.contact || '',
+      link: event.lien || '',
+      linkText: event.lien_texte || 'En savoir plus'
     }
   })
 })

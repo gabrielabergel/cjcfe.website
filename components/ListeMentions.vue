@@ -31,7 +31,7 @@ defineProps({
     default: () => [
       {
         nom: 'Éditeur du site',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+        description: 'Informations légales à renseigner.'
       }
     ]
   }

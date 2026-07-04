@@ -25,12 +25,12 @@
           <div class="list_case">
             <p class="list_label is-bold">{{ activite.titre }}</p>
           </div>
-          <div v-if="!openActivites[index]" class="list_case is-mobile-hidden">
-            <p class="list_label">{{ activite.description?.substring(0, 50) }}...</p>
+          <div class="list_case">
+            <p class="list_label list_activite_desc">
+              <template v-if="openActivites[index]">{{ activite.description }}</template>
+              <template v-else>{{ preview(activite.description) }}</template>
+            </p>
           </div>
-        </div>
-        <div class="list_desc" v-show="openActivites[index]">
-          <p class="list_dev_text">{{ activite.description }}</p>
         </div>
       </div>
     </div>
@@ -56,7 +56,17 @@ const openActivites = reactive<Record<number, boolean>>({})
 const toggleActivite = (index: number) => {
   openActivites[index] = !openActivites[index]
 }
+
+// Aperçu tronqué de la description quand l'accordéon est fermé
+const preview = (description: string) => {
+  if (!description) return ''
+  return description.length > 50 ? `${description.substring(0, 50)}…` : description
+}
 </script>
 
 <style lang="scss">
+// La description reste dans sa colonne et s'étend en place (pas de bloc qui descend)
+.list_activite_desc {
+  white-space: pre-line;
+}
 </style>

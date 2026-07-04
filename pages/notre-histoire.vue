@@ -38,6 +38,9 @@ type FetchData = CMS_API_Response & {
   }
 }
 
+// SEO récupéré depuis le CMS
+useCmsSeo("site.find('notre-histoire')")
+
 const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
   lazy: true,
   method: 'POST',

@@ -6,10 +6,13 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
     head: {
       link: [
+        { rel: 'icon', type: 'image/png', href: '/Favicon_cjcfe.png' },
+        { rel: 'apple-touch-icon', href: '/Favicon_cjcfe.png' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Special+Gothic+Condensed+One&display=swap' },
       ],
+      // Les meta SEO/Open Graph sont gérées par page via useCmsSeo (composable)
     },
   },
   devServer: {

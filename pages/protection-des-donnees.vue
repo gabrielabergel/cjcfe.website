@@ -17,6 +17,9 @@ type FetchData = CMS_API_Response & {
   } | null
 }
 
+// SEO récupéré depuis le CMS
+useCmsSeo("site.find('protection-des-donnees')")
+
 const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
   lazy: true,
   method: 'POST',

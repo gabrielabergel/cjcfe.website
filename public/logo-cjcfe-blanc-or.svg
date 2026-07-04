@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Repères" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 229.56 156.92">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #bda05e;
+      }
+
+      .cls-2 {
+        font-family: Helvetica, Helvetica;
+        font-size: 22.04px;
+      }
+
+      .cls-2, .cls-3 {
+        fill: #fff;
+      }
+
+      .cls-4 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-5 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-6 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-7 {
+        letter-spacing: -.02em;
+      }
+    </style>
+  </defs>
+  <g>
+    <text class="cls-2" transform="translate(20.69 124.77) scale(1.01 1)"><tspan class="cls-5" x="0" y="0">Communau</tspan><tspan class="cls-7" x="110.9" y="0">t</tspan><tspan class="cls-4" x="116.67" y="0">é</tspan><tspan class="cls-7" x="128.55" y="0"> </tspan><tspan class="cls-5" x="134.32" y="0">Jui</tspan><tspan class="cls-7" x="161.37" y="0">v</tspan><tspan x="172.03" y="0">e</tspan></text>
+    <text class="cls-2" transform="translate(13.83 151.21) scale(1.01 1)"><tspan class="cls-4" x="0" y="0">de</tspan><tspan class="cls-7" x="23.76" y="0"> </tspan><tspan class="cls-4" x="29.53" y="0">Clermon</tspan><tspan class="cls-7" x="110.18" y="0">t</tspan><tspan class="cls-4" x="115.95" y="0">-</tspan><tspan class="cls-6" x="122.91" y="0">F</tspan><tspan class="cls-4" x="136.02" y="0">erran</tspan><tspan x="185.59" y="0">d</tspan></text>
+  </g>
+  <g>
+    <path class="cls-1" d="M80.7,0v40.93c0,.08-.02.15-.02.23-1.41,16.33-15.19,29.95-34.09,35.46V0h34.1Z"/>
+    <path class="cls-3" d="M34.21,10.23h0v76.62C15.74,81.36,1.51,67.77.13,51.43c-.08-.92-.13-1.86-.13-2.8s.05-1.88.13-2.8C1.51,29.46,15.69,15.72,34.21,10.23"/>
+    <path class="cls-3" d="M127.31,10.23h0v76.62c-18.47-5.5-32.71-19.08-34.09-35.42-.08-.92-.13-1.86-.13-2.8s.05-1.88.13-2.8c1.38-16.37,15.57-30.11,34.09-35.6"/>
+    <polygon class="cls-3" points="177.54 10.23 177.54 48.63 159.45 48.63 159.45 86.86 139.63 86.86 139.63 10.23 177.54 10.23"/>
+    <polygon class="cls-3" points="226.56 29.34 226.56 67.75 206.74 67.75 206.74 86.86 186.93 86.86 186.93 10.23 206.74 10.23 206.74 29.34 226.56 29.34"/>
+    <path class="cls-1" d="M93.09,78.1c0-4.84-3.92-8.76-8.76-8.76s-8.76,3.92-8.76,8.76,3.92,8.76,8.76,8.76,8.76-3.92,8.76-8.76"/>
+  </g>
+</svg>

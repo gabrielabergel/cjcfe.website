@@ -154,6 +154,9 @@ const { data } = await useFetch<FetchData>('/api/CMS_KQLRequest', {
   },
 })
 
+// SEO récupéré depuis le CMS (slug dynamique)
+useCmsSeo(() => `site.find('actualites').children().find('${route.params.slug}')`)
+
 const layoutRows = computed((): LayoutRow[] => {
   const layout = data.value?.result?.layout
   if (!layout) return []

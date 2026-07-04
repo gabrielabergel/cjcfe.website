@@ -36,7 +36,36 @@
           </div>
         </div>
         <div class="list_desc list_desc--event" v-show="openEvents[index]">
-          <p class="list_dev_text">{{ event.description }}</p>
+          <div v-if="event.description" class="list_dev_text" v-html="event.description"></div>
+          <dl
+            v-if="event.speaker || event.address || event.participation || event.registration || event.contact || event.link"
+            class="event_details"
+          >
+            <template v-if="event.speaker">
+              <dt>Intervenant</dt>
+              <dd>{{ event.speaker }}</dd>
+            </template>
+            <template v-if="event.address">
+              <dt>Adresse</dt>
+              <dd>{{ event.address }}</dd>
+            </template>
+            <template v-if="event.participation">
+              <dt>Participation</dt>
+              <dd>{{ event.participation }}</dd>
+            </template>
+            <template v-if="event.registration">
+              <dt>Inscription</dt>
+              <dd>{{ event.registration }}</dd>
+            </template>
+            <template v-if="event.contact">
+              <dt>Contact</dt>
+              <dd>{{ event.contact }}</dd>
+            </template>
+            <template v-if="event.link">
+              <dt>Lien</dt>
+              <dd><a :href="event.link" target="_blank" rel="noopener noreferrer">{{ event.linkText || 'En savoir plus' }}</a></dd>
+            </template>
+          </dl>
         </div>
       </div>
     </div>
@@ -59,7 +88,7 @@ const props = defineProps({
         title: 'ex. INAUGURATION DE "NOTRE HISTORIA"',
         venue: 'ex. Consulat général du portugal',
         address: 'ex.  Rue du Conseil Général<br>1204 Genève',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+        description: 'Description de l’événement.'
       }
     ]
   }
@@ -78,4 +107,34 @@ const toggleEvent = (index) => {
 </script>
 
 <style lang="scss">
+.event_details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 8px 16px;
+  margin: var(--20) 0 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+
+  dt {
+    color: var(--blue);
+    font-weight: 600;
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  a {
+    color: var(--blue);
+    text-decoration: underline;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .event_details {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
 </style>

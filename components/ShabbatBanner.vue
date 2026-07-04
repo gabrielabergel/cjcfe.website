@@ -14,23 +14,20 @@
         </svg>
       </button>
 
-      <!-- Date du Shabbat -->
-      <div class="shabbat-banner_item">
-        <span class="shabbat-banner_label">Date</span>
-        <span class="shabbat-banner_value">{{ formattedDate }}</span>
-      </div>
-
       <!-- Paracha de la semaine -->
       <div class="shabbat-banner_item">
         <span class="shabbat-banner_label">Paracha</span>
-        <span class="shabbat-banner_value">{{ parachaLabel }}</span>
+        <span class="shabbat-banner_value">
+          {{ parachaLabel }}
+          <span v-if="shabbatParachaHe" class="shabbat-banner_he">{{ shabbatParachaHe }}</span>
+        </span>
       </div>
 
       <!-- Horaires Shabbat -->
       <div class="shabbat-banner_item">
         <span class="shabbat-banner_label">Shabbat</span>
         <span class="shabbat-banner_value">
-          Ven. {{ formatTime(shabbatDebutHeure) }} - Sam. {{ formatTime(shabbatFinHeure) }}
+          {{ formatDate(shabbatDebutDate) }} {{ formatTime(shabbatDebutHeure) }} - {{ formatDate(shabbatFinDate) }} {{ formatTime(shabbatFinHeure) }}
         </span>
       </div>
 
@@ -49,8 +46,8 @@
         <div class="shabbat-banner_item shabbat-banner_item--fete">
           <span class="shabbat-banner_label">{{ feteLabel }}</span>
           <span class="shabbat-banner_value">
-            {{ formatFeteDate(fetesDebutDate) }} {{ formatTime(fetesDebutHeure) }} -
-            {{ formatFeteDate(fetesFinDate) }} {{ formatTime(fetesFinHeure) }}
+            {{ formatDate(fetesDebutDate) }} {{ formatTime(fetesDebutHeure) }} -
+            {{ formatDate(fetesFinDate) }} {{ formatTime(fetesFinHeure) }}
           </span>
         </div>
       </template>
@@ -70,6 +67,7 @@ const toggleBanner = () => {
 
 interface Props {
   shabbatParacha?: string | null
+  shabbatParachaHe?: string | null
   shabbatDebutDate?: string | null
   shabbatDebutHeure?: string | null
   shabbatFinDate?: string | null
@@ -172,13 +170,6 @@ const feteLabel = computed(() => {
   return key ? fetesLabels[key] || key : 'Fête'
 })
 
-const formattedDate = computed(() => {
-  if (!props.shabbatDebutDate) return ''
-  const dateObj = new Date(props.shabbatDebutDate)
-  const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: 'numeric', month: 'short' }
-  return dateObj.toLocaleDateString('fr-FR', options)
-})
-
 const formatTime = (time: string | null | undefined): string => {
   if (!time) return ''
   const parts = time.split(':')
@@ -188,11 +179,14 @@ const formatTime = (time: string | null | undefined): string => {
   return time
 }
 
-const formatFeteDate = (date: string | null | undefined): string => {
+// Formate une date en "Ven. 3 juil:" (jour de la semaine + jour + mois court + séparateur)
+const formatDate = (date: string | null | undefined): string => {
   if (!date) return ''
   const dateObj = new Date(date)
-  const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: 'numeric' }
-  return dateObj.toLocaleDateString('fr-FR', options)
+  const str = dateObj
+    .toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })
+    .replace(/\.$/, '') // retire le point final de l'abréviation du mois (juil. -> juil)
+  return `${str.charAt(0).toUpperCase()}${str.slice(1)}:`
 }
 </script>
 
@@ -247,6 +241,15 @@ const formatFeteDate = (date: string | null | undefined): string => {
   font-size: 14px;
   font-weight: 500;
   color: var(--white);
+}
+
+.shabbat-banner_he {
+  direction: rtl;
+  unicode-bidi: isolate;
+  margin-left: 8px;
+  padding-left: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.4);
+  font-weight: 700;
 }
 
 @media screen and (max-width: 991px) {
