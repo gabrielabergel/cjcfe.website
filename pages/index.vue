@@ -70,7 +70,6 @@ type HomePageData = CMS_API_Response & {
 
 // Fetch des données de la page home + événements + portraits
 const { data } = await useFetch<HomePageData>('/api/CMS_KQLRequest', {
-  lazy: true,
   method: 'POST',
   body: {
     query: 'site',

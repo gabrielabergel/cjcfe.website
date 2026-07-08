@@ -1,10 +1,10 @@
 <template>
-  <component
-    :is="tag"
-    class="block-titre"
-    :class="`block-titre--${tag}`"
-    v-html="text"
-  />
+  <h1 v-if="tag === 'h1'" class="block-titre block-titre--h1" v-html="text" />
+  <h2 v-else-if="tag === 'h2'" class="block-titre block-titre--h2" v-html="text" />
+  <h3 v-else-if="tag === 'h3'" class="block-titre block-titre--h3" v-html="text" />
+  <h4 v-else-if="tag === 'h4'" class="block-titre block-titre--h4" v-html="text" />
+  <h5 v-else-if="tag === 'h5'" class="block-titre block-titre--h5" v-html="text" />
+  <h6 v-else class="block-titre block-titre--h6" v-html="text" />
 </template>
 
 <script setup lang="ts">

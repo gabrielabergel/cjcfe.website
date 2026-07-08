@@ -114,6 +114,16 @@ const getImageUrl = (image: CMS_ImageObject | null): string => {
   width: 100%;
   height: 100%;
 
+  // Toutes les slides à la même hauteur (celle de la plus haute)
+  // pour que les fonds des cartes s'alignent jusqu'en bas
+  .swiper-wrapper {
+    align-items: stretch;
+  }
+
+  .swiper-slide {
+    height: auto;
+  }
+
   .swiper-button-prev,
   .swiper-button-next {
     color: var(--white);
@@ -170,7 +180,7 @@ const getImageUrl = (image: CMS_ImageObject | null): string => {
 .article_card_info {
   padding: var(--20);
   background-color: var(--beige);
-  height: 100%;
+  flex: 1 1 auto; // grandit pour que le fond aille jusqu'en bas de la carte
 
   &.is-blue {
     background-color: var(--blue);

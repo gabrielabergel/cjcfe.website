@@ -156,10 +156,10 @@ const horairesData = computed(() => {
   height: auto;
 }
 
-// Logo plus grand sur mobile
+// Logo un peu plus petit sur mobile
 @media screen and (max-width: 767px) {
   .app-loader_logo {
-    width: min(78vw, 360px);
+    width: min(55vw, 240px);
   }
 }
 
