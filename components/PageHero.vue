@@ -41,7 +41,7 @@ withDefaults(defineProps<Props>(), {
 .page-hero {
   position: relative;
   width: 100%;
-  min-height: 100dvh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -130,7 +130,7 @@ withDefaults(defineProps<Props>(), {
 // Media queries
 @media screen and (max-width: 991px) {
   .page-hero {
-    min-height: 100dvh;
+    min-height: 100svh;
   }
 
   .page-hero_title {
@@ -148,7 +148,7 @@ withDefaults(defineProps<Props>(), {
 
 @media screen and (max-width: 767px) {
   .page-hero {
-    min-height: 100dvh;
+    min-height: 100svh;
   }
 
   .page-hero_content {

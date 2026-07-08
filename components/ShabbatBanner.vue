@@ -264,8 +264,8 @@ const formatDate = (date: string | null | undefined): string => {
     .shabbat-banner_toggle {
       display: flex;
       position: fixed;
-      bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-      left: 20px;
+      top: 50%;
+      right: 20px;
       z-index: 1000;
       width: 56px;
       height: 56px;
@@ -276,17 +276,17 @@ const formatDate = (date: string | null | undefined): string => {
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transition: transform 0.3s ease, box-shadow 0.3s ease, bottom 0.1s ease;
-      // Force GPU pour meilleur comportement avec barre navigateur
-      transform: translateZ(0);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      // Centrage vertical (translateZ force le GPU pour un rendu net)
+      transform: translateY(-50%) translateZ(0);
 
       &:hover {
-        transform: scale(1.05);
+        transform: translateY(-50%) scale(1.05);
         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
       }
 
       &:active {
-        transform: scale(0.95);
+        transform: translateY(-50%) scale(0.95);
       }
     }
 
