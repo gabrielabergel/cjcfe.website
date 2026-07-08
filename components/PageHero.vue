@@ -154,7 +154,7 @@ withDefaults(defineProps<Props>(), {
   .page-hero_content {
     flex-direction: column;
     gap: 20px;
-    padding: 30px 30px 70px 30px;
+    padding: 30px;
   }
 
   .page-hero_title {
@@ -172,7 +172,7 @@ withDefaults(defineProps<Props>(), {
 
 @media screen and (max-width: 479px) {
   .page-hero_content {
-    padding: 20px 20px 70px 20px;
+    padding: 20px;
   }
 
   .page-hero_title {

@@ -128,7 +128,7 @@ defineProps<Props>()
   .hero_content {
     flex-direction: column;
     gap: 20px;
-    padding: 30px 30px 70px 30px;
+    padding: 30px;
   }
 
   .hero_title {
@@ -146,7 +146,7 @@ defineProps<Props>()
 
 @media screen and (max-width: 479px) {
   .hero_content {
-    padding: 20px 20px 70px 20px;
+    padding: 20px;
   }
 
   .hero_title {
