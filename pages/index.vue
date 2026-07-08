@@ -72,7 +72,6 @@ type HomePageData = CMS_API_Response & {
 const { data } = await useFetch<HomePageData>('/api/CMS_KQLRequest', {
   lazy: true,
   method: 'POST',
-  getCachedData: () => undefined,
   body: {
     query: 'site',
     select: {

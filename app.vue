@@ -38,9 +38,11 @@
       :fetes-fin-heure="horairesData.fetesFinHeure"
       class="app-shabbat-banner"
     />
-    <main class="app-main">
+    <!-- Wrapper en <div> : chaque page fournit déjà son propre <main>.
+         Deux <main> imbriqués = HTML invalide et désynchronise l'hydratation Vue. -->
+    <div class="app-main">
       <NuxtPage/>
-    </main>
+    </div>
     <AppFooter />
   </div>
 </template>
@@ -71,7 +73,9 @@ type AppData = CMS_API_Response & {
   }
 }
 
-const { data: appData } = await useFetch<AppData>('/api/CMS_KQLRequest', {
+// Pas de `await` : garder app.vue (le layout persistant) synchrone, sinon le
+// <Suspense> de Nuxt re-démonte le layout à chaque navigation.
+const { data: appData } = useFetch<AppData>('/api/CMS_KQLRequest', {
   lazy: true,
   method: 'POST',
   body: {
@@ -101,7 +105,7 @@ const { data: appData } = await useFetch<AppData>('/api/CMS_KQLRequest', {
 })
 
 // Horaires de Shabbat automatiques (paracha, bougies, havdalah) via Hebcal
-const { data: shabbatData } = await useFetch('/api/shabbat', { lazy: true })
+const { data: shabbatData } = useFetch('/api/shabbat', { lazy: true })
 
 const bandeauText = computed(() => appData.value?.result?.bandeau?.bandeau || null)
 const bandeauLink = computed(() => {
