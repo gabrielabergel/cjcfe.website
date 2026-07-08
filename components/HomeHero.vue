@@ -37,7 +37,7 @@ defineProps<Props>()
 // Hero section styles
 .hero {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
