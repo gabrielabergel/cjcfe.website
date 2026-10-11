@@ -2,7 +2,9 @@
   <main class="page">
 
     <template v-if="data?.status === 'ok' && data.result">
-      <ListeMentions :title="data.result.title" :items="data.result.items ?? []" />
+      <ListeMentions :title="data.result.title" :items="data.result.items ?? []">
+        <MatomoOptOut />
+      </ListeMentions>
     </template>
 
   </main>
