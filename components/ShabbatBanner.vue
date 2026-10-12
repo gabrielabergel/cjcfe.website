@@ -182,9 +182,10 @@ const formatTime = (time: string | null | undefined): string => {
 // Formate une date en "Ven. 3 juil:" (jour de la semaine + jour + mois court + séparateur)
 const formatDate = (date: string | null | undefined): string => {
   if (!date) return ''
-  const dateObj = new Date(date)
+  // Date seule (YYYY-MM-DD) : lue en UTC pour ne pas décaler d'un jour selon le fuseau du visiteur
+  const dateObj = new Date(date.slice(0, 10) + 'T00:00:00Z')
   const str = dateObj
-    .toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })
+    .toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' })
     .replace(/\.$/, '') // retire le point final de l'abréviation du mois (juil. -> juil)
   return `${str.charAt(0).toUpperCase()}${str.slice(1)}:`
 }

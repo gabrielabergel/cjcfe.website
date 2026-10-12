@@ -1,7 +1,11 @@
 // Récupère automatiquement, depuis l'API Hebcal (géolocalisée sur Clermont-Ferrand) :
 //  - le prochain Shabbat (paracha, allumage des bougies, havdalah)
 //  - le prochain événement à venir (yom tov ou jeûne), avec heure de début/fin
-// Doc: https://www.hebcal.com/home/197/shabbat-times-rest-api
+// Doc: https://www.hebcal.com/home/195/jewish-calendar-rest-api
+//
+// Tout est calculé à partir d'un seul appel /hebcal sur une plage de dates explicite.
+// (L'ancien appel à /shabbat dépendait de la date "du jour" côté Hebcal et pouvait
+// renvoyer la havdalah d'une fête précédente, ex. Sim'hat Torah, comme fin de Shabbat.)
 
 // GeoNames ID de Clermont-Ferrand (Europe/Paris)
 const GEONAME_ID = 3024635
@@ -134,24 +138,26 @@ interface HebcalItem {
   hebrew?: string
 }
 
+// Date du jour (YYYY-MM-DD) à Paris
+function todayParis(now: Date): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(now)
+}
+
+// Ajoute n jours à une date YYYY-MM-DD
+function addDays(date: string, n: number): string {
+  const d = new Date(date + 'T00:00:00Z')
+  d.setUTCDate(d.getUTCDate() + n)
+  return d.toISOString().slice(0, 10)
+}
+
+// Samedi de la semaine en cours (aujourd'hui si on est samedi)
+function nextSaturday(date: string): string {
+  const day = new Date(date + 'T00:00:00Z').getUTCDay() // 0 = dimanche, 6 = samedi
+  return addDays(date, (6 - day + 7) % 7)
+}
+
 export default defineEventHandler(async () => {
-  // 1) Prochain Shabbat (endpoint dédié : renvoie toujours le Shabbat à venir)
-  const shabbat = await $fetch<{ items: HebcalItem[] }>('https://www.hebcal.com/shabbat', {
-    query: { cfg: 'json', geonameid: GEONAME_ID, b: 18, M: 'on' },
-  })
-
-  const sItems = shabbat?.items ?? []
-  const candles = sItems.find((i) => i.category === 'candles')
-  const havdalah = sItems.find((i) => i.category === 'havdalah')
-  const parashat = sItems.find((i) => i.category === 'parashat')
-
-  const debut = splitDateTime(candles?.date)
-  const fin = splitDateTime(havdalah?.date)
-  const parachaName = parashat?.title?.replace(/^Parashat\s+/i, '')
-  // Nom hébreu (ex. "פרשת פינחס" -> "פינחס")
-  const parachaHe = parashat?.hebrew?.replace(/^פרשת\s+/, '') ?? null
-
-  // 2) Prochain événement à venir : yom tov (bougies → havdalah) OU jeûne (début → fin).
+  // Prochain événement à venir : yom tov (bougies → havdalah) OU jeûne (début → fin).
   // On démarre quelques jours avant aujourd'hui pour capter le 1er soir d'un événement
   // déjà en cours (sinon on raterait le début du premier jour).
   const now = new Date()
@@ -210,6 +216,35 @@ export default defineEventHandler(async () => {
     .filter((e) => new Date(e.fin).getTime() >= now.getTime())
     .sort((a, b) => new Date(a.debut).getTime() - new Date(b.debut).getTime())[0]
 
+  // Prochain Shabbat : bougies du vendredi -> havdalah du samedi.
+  // Le samedi soir après la havdalah, on passe au Shabbat suivant.
+  const today = todayParis(now)
+  const findShabbat = (samedi: string) => {
+    const vendredi = addDays(samedi, -1)
+    const candles = items.find((i) => i.category === 'candles' && i.date.startsWith(vendredi))
+    // Si un yom tov commence samedi soir, Hebcal donne un allumage au lieu d'une havdalah
+    const finItem =
+      items.find((i) => i.category === 'havdalah' && i.date.startsWith(samedi)) ??
+      items.find((i) => i.category === 'candles' && i.date.startsWith(samedi))
+    const parashat = items.find((i) => i.category === 'parashat' && i.date === samedi)
+    // Shabbat pendant une fête (pas de paracha) : on affiche le nom de la fête
+    const fete = parashat ? null : items.find((i) => i.category === 'holiday' && i.date === samedi)
+    return { candles, finItem, parashat, fete }
+  }
+  let samedi = nextSaturday(today)
+  let sh = findShabbat(samedi)
+  if (sh.finItem && new Date(sh.finItem.date).getTime() < now.getTime()) {
+    samedi = addDays(samedi, 7)
+    sh = findShabbat(samedi)
+  }
+
+  const debut = splitDateTime(sh.candles?.date)
+  const fin = splitDateTime(sh.finItem?.date)
+  const parachaName = sh.parashat?.title?.replace(/^Parashat\s+/i, '')
+  // Nom hébreu (ex. "פרשת פינחס" -> "פינחס")
+  const parachaHe = sh.parashat?.hebrew?.replace(/^פרשת\s+/, '') ?? sh.fete?.hebrew ?? null
+  const parachaFr = translateParacha(parachaName) ?? (sh.fete ? feteName(sh.fete.title) : null)
+
   const fd = splitDateTime(prochain?.debut)
   const ff = splitDateTime(prochain?.fin)
   const fete = {
@@ -222,7 +257,7 @@ export default defineEventHandler(async () => {
   }
 
   return {
-    shabbatParacha: translateParacha(parachaName),
+    shabbatParacha: parachaFr,
     shabbatParachaHe: parachaHe,
     shabbatDebutDate: debut.date,
     shabbatDebutHeure: debut.heure,
